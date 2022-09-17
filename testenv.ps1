@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh -NoExit -Interactive -NoLogo -NoProfile
+#!/usr/bin/env pwsh -NoExit -Interactive -NoLogo
 
 param(
     [switch]

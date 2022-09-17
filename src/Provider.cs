@@ -9,25 +9,13 @@ public class Provider : IMountAnythingProvider
     public Router CreateRouter()
     {
         var root = Router.Create<RootHandler>();
-        root.Map<RepositoryHandler>(repository =>
+        root.Map<RepositoryHandler, RepositoryName>(repository =>
         {
-            repository.MapRegex<FileHandler>(@"[a-zA-Z0-9\s-_]+");
+            repository.MapRecursive<FileHandler, FilePath>();
         });
         root.RegisterServices(builder =>
         {
-            builder.Register(c =>
-            {
-                var endpoint = Environment.GetEnvironmentVariable("ARTIFACTORY_ENDPOINT");
-                if (string.IsNullOrEmpty(endpoint))
-                {
-                    throw new Exception("ARTIFACTORY_ENDPOINT environment variable is required");
-                }
-
-                return new HttpClient
-                {
-                    BaseAddress = new Uri(endpoint)
-                };
-            });
+            builder.RegisterType<ArtifactoryClient>();
         });
 
         return root;
@@ -35,6 +23,9 @@ public class Provider : IMountAnythingProvider
 
     public IEnumerable<DefaultDrive> GetDefaultDrives()
     {
-        yield return new DefaultDrive("artifactory");
+        if (!string.IsNullOrEmpty(ArtifactoryClient.Env.ARTIFACTORY_ENDPOINT))
+        {
+            yield return new DefaultDrive("artifactory");
+        }
     }
 }

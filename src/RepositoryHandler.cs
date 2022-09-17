@@ -4,17 +4,28 @@ namespace MountArtifactory;
 
 public class RepositoryHandler : PathHandler
 {
-    public RepositoryHandler(ItemPath path, IPathHandlerContext context) : base(path, context)
+    private readonly ArtifactoryClient _client;
+
+    public RepositoryHandler(ItemPath path, IPathHandlerContext context, ArtifactoryClient client) : base(path, context)
     {
+        _client = client;
     }
 
     protected override IItem? GetItemImpl()
     {
-        throw new NotImplementedException();
+        var repository = _client.GetRepository(ItemName);
+
+        return repository != null ? new RepositoryItem(ParentPath, repository) : null;
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        throw new NotImplementedException();
+        var file = _client.GetFile(ItemName);
+        if (file != null)
+        {
+            return file.Children?.Select(c => new FileItem(Path, c)) ?? Enumerable.Empty<IItem>();
+        }
+        
+        return Enumerable.Empty<IItem>();
     }
 }
