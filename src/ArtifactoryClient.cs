@@ -1,7 +1,5 @@
 using System.Diagnostics;
 using System.Net;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using MountAnything;
 
 namespace MountArtifactory;
@@ -10,26 +8,15 @@ public class ArtifactoryClient : IDisposable
 {
     private readonly HttpClient _client;
     
-    public ArtifactoryClient(IPathHandlerContext context)
+    public ArtifactoryClient(ArtifactoryConfig config, IPathHandlerContext context)
     {
-        var endpoint = Environment.GetEnvironmentVariable(Env.ARTIFACTORY_ENDPOINT);
-        if (string.IsNullOrEmpty(endpoint))
-        {
-            throw new Exception($"{Env.ARTIFACTORY_ENDPOINT} environment variable is required");
-        }
-        if (!endpoint.EndsWith("/"))
-        {
-            endpoint += "/";
-        }
-
         _client = new HttpClient(new DebugLoggingHandler(context, new HttpClientHandler()))
         {
-            BaseAddress = new Uri(endpoint)
+            BaseAddress = config.EndpointUri
         };
-        var apiKey = Environment.GetEnvironmentVariable(Env.ARTIFACTORY_API_KEY);
-        if (!string.IsNullOrEmpty(apiKey))
+        if (!string.IsNullOrEmpty(config.ApiKey))
         {
-            _client.DefaultRequestHeaders.Add("X-JFrog-Art-Api", apiKey);
+            _client.DefaultRequestHeaders.Add("X-JFrog-Art-Api", config.ApiKey);
         }   
     }
 
@@ -72,6 +59,11 @@ public class ArtifactoryClient : IDisposable
         _client.Delete($"{repositoryName}/{filePath}");
     }
 
+    public HttpResponseMessage Get(string uri)
+    {
+        return _client.Get(uri);
+    }
+
     public class DebugLoggingHandler : DelegatingHandler
     {
         private readonly IPathHandlerContext _context;
@@ -103,9 +95,5 @@ public class ArtifactoryClient : IDisposable
         _client.Dispose();
     }
     
-    public static class Env
-    {
-        public const string ARTIFACTORY_ENDPOINT = nameof(ARTIFACTORY_ENDPOINT);
-        public const string ARTIFACTORY_API_KEY = nameof(ARTIFACTORY_API_KEY);
-    }
+    
 }

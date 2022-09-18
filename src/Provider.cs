@@ -15,6 +15,7 @@ public class Provider : IMountAnythingProvider
         });
         root.RegisterServices(builder =>
         {
+            builder.Register(_ => ArtifactoryConfig.FromEnv());
             builder.RegisterType<ArtifactoryClient>();
         });
 
@@ -23,7 +24,7 @@ public class Provider : IMountAnythingProvider
 
     public IEnumerable<DefaultDrive> GetDefaultDrives()
     {
-        if (!string.IsNullOrEmpty(ArtifactoryClient.Env.ARTIFACTORY_ENDPOINT))
+        if (!string.IsNullOrEmpty(ArtifactoryConfig.Env.ARTIFACTORY_ENDPOINT))
         {
             yield return new DefaultDrive("artifactory");
         }

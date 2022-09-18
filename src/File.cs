@@ -6,13 +6,13 @@ public record File
 {
     #region Shared Properties
 
-    public string Uri { get; set; }
-    public string Repo { get; set; }
-    public string Path { get; set; }
+    public string Uri { get; set; } = null!;
+    public string Repo { get; set; } = null!;
+    public string Path { get; set; } = null!;
     public DateTimeOffset Created { get; set; }
-    public string CreatedBy { get; set; }
+    public string CreatedBy { get; set; } = null!;
     public DateTimeOffset LastModified { get; set; }
-    public string ModifiedBy { get; set; }
+    public string ModifiedBy { get; set; } = null!;
     public DateTimeOffset LastUpdated { get; set; }
 
     #endregion
@@ -40,13 +40,13 @@ public record File
 
 public record FolderChild
 {
-    public string Uri { get; set; }
+    public string Uri { get; set; } = null!;
     public bool Folder { get; set; }
 }
 
 public record Checksum
 {
-    public string Md5 { get; set; }
-    public string Sha1 { get; set; }
-    public string Sha256 { get; set; }
+    public string Md5 { get; set; } = null!;
+    public string Sha1 { get; set; } = null!;
+    public string Sha256 { get; set; } = null!;
 }

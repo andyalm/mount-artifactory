@@ -32,6 +32,15 @@ public static class HttpClientExtensions
         }
     }
 
+    public static HttpResponseMessage Get(this HttpClient client, string uri)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, uri);
+        var response = client.Send(request);
+        ThrowIfNotSuccessful(response, request);
+
+        return response;
+    }
+
     public static void Delete(this HttpClient client, string uri)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, uri);
