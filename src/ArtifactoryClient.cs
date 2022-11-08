@@ -64,6 +64,19 @@ public class ArtifactoryClient : IDisposable
         return _client.Get(uri);
     }
 
+    public void Put(string uri, Stream inputStream)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Put, uri);
+        request.Content = new StreamContent(inputStream);
+
+        using var response = _client.Send(request);
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new HttpRequestException($"Error {response.StatusCode:D} ({response.StatusCode:G}) occurred trying to {HttpMethod.Put} {uri}", null,
+                response.StatusCode);
+        }
+    }
+
     public class DebugLoggingHandler : DelegatingHandler
     {
         private readonly IPathHandlerContext _context;

@@ -5,7 +5,6 @@ param(
     $Debug
 )
 $ErrorActionPreference='Stop'
-$env:NO_MOUNT_ARTIFACTORY='1'
 $DebugPreference=$Debug ? 'Continue' : 'SilentlyContinue'
 dotnet build
 if(-not (Get-Alias ls -ErrorAction SilentlyContinue)) {

@@ -1,16 +1,19 @@
-﻿using System.Management.Automation.Provider;
+﻿using System.Text;
 using MountAnything;
 using MountAnything.Content;
 
 namespace MountArtifactory;
 
-public class FileHandler : PathHandler, IContentReaderHandler, IRemoveItemHandler
+public class FileHandler : PathHandler,
+    IContentReaderHandler,
+    IContentWriterHandler,
+    INewItemHandler,
+    IRemoveItemHandler
 {
     private readonly ArtifactoryClient _client;
     private readonly RepositoryName _repositoryName;
     private readonly FilePath _filePath;
     private readonly Uri _repositoryUri;
-
 
     public FileHandler(ItemPath path,
         IPathHandlerContext context,
@@ -50,13 +53,48 @@ public class FileHandler : PathHandler, IContentReaderHandler, IRemoveItemHandle
         _client.Delete(_repositoryName.Value, _filePath.Path);
     }
 
-    public IContentReader GetContentReader()
+    public IStreamContentReader GetContentReader()
     {
         if (GetItem() is FileItem { IsFolder: false })
         {
-            return new ArtifactoryFileContentReader(_client, $"{_repositoryName.Value}/{_filePath.Path}");
+            var response = _client.Get($"{_repositoryName.Value}/{_filePath.Path}");
+
+            return new HttpResponseContentReader(response);
         }
 
-        return new StringContentReader(String.Empty);
+        return new EmptyContentReader();
+    }
+
+    public IStreamContentWriter GetContentWriter()
+    {
+        if (GetItem() is FileItem { IsFolder: false })
+        {
+            return new StreamContentWriter(stream =>
+                _client.Put($"{_repositoryName.Value}/{_filePath.Path}", stream));
+        }
+
+        throw new InvalidOperationException("Folder content can not be updated");
+    }
+
+    public void NewItem(string? itemTypeName, object? newItemValue)
+    {
+        if (string.IsNullOrEmpty(itemTypeName))
+        {
+            itemTypeName = "File";
+        }
+        if (itemTypeName != "File")
+        {
+            throw new InvalidOperationException($"Creating item type '{itemTypeName}' is not currently supported. Only File creation is currently supported");
+        }
+
+        var contentStream = newItemValue switch
+        {
+            null => new MemoryStream(),
+            string stringValue => new MemoryStream(Encoding.UTF8.GetBytes(stringValue)),
+            _ => throw new InvalidOperationException(
+                "Currently only string content is supported when creating new items")
+        };
+        
+        _client.Put($"{_repositoryName.Value}/{_filePath.Path}", contentStream);
     }
 }
