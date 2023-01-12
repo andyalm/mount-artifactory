@@ -3,7 +3,7 @@
     <View>
       <Name>ArtifactoryRepositoryItem</Name>
       <ViewSelectedBy>
-        <TypeName>MountArtifactory.Repository</TypeName>
+        <TypeName>MountArtifactory.RepositoryItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

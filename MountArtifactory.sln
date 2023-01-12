@@ -5,9 +5,11 @@ VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountArtifactory", "src\MountArtifactory.csproj", "{0076F624-0DA8-41B3-A92F-297254AF24AF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{C6958C84-7C05-48C6-B986-9F23755EE97A}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{0633FA5D-8F46-4E3A-879D-247AC6864748}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
+		publish.ps1 = publish.ps1
+		testenv.ps1 = testenv.ps1
 	EndProjectSection
 EndProject
 Global

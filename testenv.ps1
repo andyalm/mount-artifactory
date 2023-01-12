@@ -13,5 +13,6 @@ if(-not (Get-Alias ls -ErrorAction SilentlyContinue)) {
 if(-not (Get-Alias cat -ErrorAction SilentlyContinue)) {
     New-Alias cat Get-Content
 }
+$env:NO_MOUNT_ARTIFACTORY='1'
 Import-Module $([IO.Path]::Combine($PWD,'src','bin','Debug','net6.0','Module','MountArtifactory.psd1'))
 cd artifactory:

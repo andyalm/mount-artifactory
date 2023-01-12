@@ -76,7 +76,7 @@ public class FileHandler : PathHandler,
         throw new InvalidOperationException("Folder content can not be updated");
     }
 
-    public void NewItem(string? itemTypeName, object? newItemValue)
+    public IItem NewItem(string? itemTypeName, object? newItemValue)
     {
         if (string.IsNullOrEmpty(itemTypeName))
         {
@@ -96,5 +96,7 @@ public class FileHandler : PathHandler,
         };
         
         _client.Put($"{_repositoryName.Value}/{_filePath.Path}", contentStream);
+
+        return GetItem(Freshness.Guaranteed)!;
     }
 }

@@ -30,7 +30,6 @@ public class FileItem : Item
     public string Path { get; set; }
     public bool IsFolder { get; }
     public override bool IsPartial { get; }
-    protected override string TypeName => GetType().FullName!;
     public override string? ItemType => IsFolder ? "Directory" : "File";
     public FolderChild[]? Children { get; set; }
     

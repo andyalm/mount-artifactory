@@ -9,22 +9,29 @@ public class ArtifactoryConfig
         {
             throw new Exception($"{Env.ARTIFACTORY_ENDPOINT} environment variable is required");
         }
+
+        return new ArtifactoryConfig(ConstructUri(endpoint))
+        {
+            ApiKey = Environment.GetEnvironmentVariable(Env.ARTIFACTORY_API_KEY)
+        };
+    }
+
+    public static Uri ConstructUri(string endpoint)
+    {
         if (!endpoint.EndsWith("/"))
         {
             endpoint += "/";
         }
-        
-        var config = new ArtifactoryConfig
-        {
-            EndpointUri = new Uri(endpoint)
-        };
-        
-        config.ApiKey = Environment.GetEnvironmentVariable(Env.ARTIFACTORY_API_KEY);
 
-        return config;
+        return new Uri(endpoint);
     }
     
-    public Uri EndpointUri { get; set; }
+    public ArtifactoryConfig(Uri endpointUri)
+    {
+        EndpointUri = endpointUri;
+    }
+    
+    public Uri EndpointUri { get; }
     public string? ApiKey { get; set; }
 
     public Uri RepositoryUri(string repositoryName)
