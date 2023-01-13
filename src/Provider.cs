@@ -34,11 +34,6 @@ public class Provider : MountAnythingProvider<ArtifactoryDriveParameters>
     
     protected override PSDriveInfo NewDrive(PSDriveInfo driveInfo, ArtifactoryDriveParameters parameters)
     {
-        if (driveInfo is ArtifactoryDriveInfo)
-        {
-            return driveInfo;
-        }
-        
         var artifactoryConfig = new ArtifactoryConfig(ArtifactoryConfig.ConstructUri(parameters.ArtifactoryEndpoint))
         {
             ApiKey = parameters.ApiKey
