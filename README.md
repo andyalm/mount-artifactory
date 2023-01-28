@@ -9,15 +9,10 @@ Navigate artifactory as a virtual filesystem.
 Install-Module MountArtifactory
 ```
 
-2. Add the following to your powershell profile:
+2. Add the following to your powershell profile. Replace the artifactory endpoint and api key with your own values:
 ```powershell
-# replace with your real artifactory endpoint
-$env:ARTIFACTORY_ENDPOINT="https://myartifactory.mydomain.local/artifactory"
-
-# api key is technically optional, but you will be navigating it anonymously if you don't set one
-$env:ARTIFACTORY_API_KEY="my-artifactory-api-key"
-
 Import-Module MountArtifactory
+New-PSDrive -Name artifactory -Provider MountArtifactory -Root '' -ArtifactoryEndpoint 'https://myartifactory.mydomain.local/artifactory' -ApiKey my-artifactory-api-key
 ```
 
 3. You can now explore your artifactory repositories via the `artifactory:` PS drive.
